@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "مهمة إنقاذ الطائر",
+  "short_name": "إنقاذ الطائر",
+  "description": "لعبة تعليمية تفاعلية لدرس عودة الطائر للصف الثاني",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6faff",
+  "theme_color": "#d9f3ff",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}
+  ]
+}

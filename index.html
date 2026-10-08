@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#d9f3ff">
+<meta name="description" content="لعبة تعليمية تفاعلية لدرس عودة الطائر للصف الثاني">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>مهمة إنقاذ الطائر</title>
+<style>
+:root{font-family:Arial,Tahoma,sans-serif;color:#20334a;background:#f6faff}
+*{box-sizing:border-box}body{margin:0;padding:14px;max-width:760px;margin-inline:auto}
+.sky{background:linear-gradient(145deg,#d9f3ff,#f1f4ff);border:1px solid #a9d9f1;border-radius:22px;padding:16px;text-align:center;overflow:hidden}
+.hero{font-size:64px;line-height:1.3}.top{display:flex;justify-content:space-between;font-size:14px;font-weight:bold;gap:8px}
+h1{font-size:clamp(24px,6vw,32px);margin:8px 0}p{line-height:1.7}
+.panel{border:1px solid #d5e0ec;background:#fff;border-radius:18px;padding:15px;margin-top:14px}
+.btn{width:100%;min-height:49px;padding:12px;border-radius:13px;border:1px solid #cad7e5;background:#f4f8fc;color:#20334a;font-weight:700;font-size:16px;text-align:center;cursor:pointer}
+.btn:focus-visible{outline:3px solid #1685c5;outline-offset:2px}.primary{background:#d9f1ff;border-color:#63b7e8}.choice{min-height:58px}
+.good{border:2px solid #299a63!important;background:#e1f8e9!important;color:#145b35!important}.bad{border:2px solid #d76d6d!important;background:#ffeded!important;color:#852929!important}
+.muted{color:#63748a}.word{font-size:clamp(25px,6vw,36px);font-weight:800;margin:12px 0;text-align:center}
+.track{height:9px;background:#dbe5ef;border-radius:99px;overflow:hidden;margin-top:12px}.fill{height:100%;width:0;background:#36a5e0;transition:width .25s}
+.stage{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid #d5e0ec;border-radius:13px;margin:8px 0}.stageIcon{font-size:27px}
+.feedback{min-height:30px;font-weight:700;text-align:center;padding:6px}
+.grid{display:grid;grid-template-columns:1fr;gap:9px}@media(min-width:520px){.grid{grid-template-columns:1fr 1fr}}
+[hidden]{display:none!important}footer{text-align:center;font-size:12px;color:#63748a;padding:14px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+ <header class="sky">
+  <div class="top"><span>🐦 مغامرة تعليمية</span><span id="stars">⭐ 0</span></div>
+  <div class="hero" id="hero" aria-hidden="true">🐦</div>
+  <h1>مهمة إنقاذ الطائر</h1>
+  <p>ساعد العصفور الصغير على العودة إلى أصدقائه بأمان!</p>
+  <div class="top" style="justify-content:center"><span id="level">المرحلة 1 من 5</span><span>•</span><span id="score">0 إجابات صحيحة</span></div>
+  <div class="track"><div id="progress" class="fill"></div></div>
+ </header>
+ <section id="start" class="panel">
+  <h2>🗺️ خريطة الإنقاذ</h2>
+  <div class="stage"><span class="stageIcon">🌤️</span><div><b>١. اكتشف الكلمة</b><div class="muted">تعرّف إلى كلمات الدرس</div></div></div>
+  <div class="stage"><span class="stageIcon">🌪️</span><div><b>٢. تحدّي العاصفة</b><div class="muted">اعثر على الكلمة المطلوبة</div></div></div>
+  <div class="stage"><span class="stageIcon">🪶</span><div><b>٣. أعد الريش</b><div class="muted">طابق الكلمات بمعانيها</div></div></div>
+  <div class="stage"><span class="stageIcon">🪺</span><div><b>٤. أكمل النص</b><div class="muted">اختر الكلمة الناقصة</div></div></div>
+  <div class="stage"><span class="stageIcon">🏆</span><div><b>٥. العودة بأمان</b><div class="muted">اختبر فهمك للقصة</div></div></div>
+  <button id="begin" class="btn primary">🚀 ابدأ المغامرة</button>
+ </section>
+ <section id="play" class="panel" hidden>
+  <div class="top"><span id="stageName">🌤️ اكتشف الكلمة</span><span id="count">السؤال 1 من 10</span></div>
+  <h2 id="prompt" style="text-align:center;font-size:20px">اختر الإجابة الصحيحة</h2>
+  <div id="question" class="word"></div>
+  <div id="options" class="grid"></div>
+  <div id="feedback" class="feedback" aria-live="polite"></div>
+  <button id="next" class="btn primary" hidden>متابعة المغامرة ←</button>
+ </section>
+ <section id="finish" class="panel" style="text-align:center" hidden>
+  <div id="finishEmoji" style="font-size:60px">🏆</div><h2>أحسنت يا بطل!</h2>
+  <p id="finishMessage">عاد الطائر إلى أصدقائه بأمان.</p>
+  <div class="grid">
+   <div class="stage" style="display:block"><div style="font-size:25px">⭐</div><b id="finalStars">0 / 10</b><div class="muted">النجوم</div></div>
+   <div class="stage" style="display:block"><div style="font-size:25px">🎯</div><b id="finalScore">0 / 10</b><div class="muted">الإجابات الصحيحة</div></div>
+  </div>
+  <button id="again" class="btn primary">🔄 العب من جديد</button>
+ </section>
+ <footer>إعداد وتصميم: أ. أحمد أبو طبو · تعمل اللعبة دون إنترنت بعد فتحها أول مرة.</footer>
+</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const stages=[
+{title:'🌤️ اكتشف الكلمة',hero:'🐦',qs:[
+{p:'ما معنى «عاصفة» في النص؟',w:'عاصفة',o:['ريح قوية','عش','ريشه'],a:0},
+{p:'ما معنى «عش»؟',w:'عش',o:['مطر غزير','مكان تعيش فيه الطيور','الأرض'],a:1}]},
+{title:'🌪️ تحدّي العاصفة',hero:'🌪️',qs:[
+{p:'اضغط على الكلمة المطلوبة:',w:'عاصفة',o:['عصفور','عاصفة','أصدقائه'],a:1},
+{p:'أي كلمة وردت في الدرس؟',w:'اختر الكلمة',o:['الريش الجديد','الطريق الطويل','البيت الكبير'],a:0}]},
+{title:'🪶 أعد الريش',hero:'🪶',qs:[
+{p:'«ريشه» من ...',w:'ريشه',o:['جسمه','العش','المطر'],a:0},
+{p:'من الذي اجتمع في القصة؟',w:'اجتمعت ...',o:['الأشجار','العصافير','الغيوم'],a:1}]},
+{title:'🪺 أكمل النص',hero:'🪺',qs:[
+{p:'«فجأة هبّت ______ قوية»',w:'أكمل الجملة',o:['عاصفة','عش','ريشه'],a:0},
+{p:'«وبفضل ______ الجديد»',w:'أكمل الجملة',o:['المطر','الريش','الأرض'],a:1}]},
+{title:'🏆 العودة بأمان',hero:'🕊️',qs:[
+{p:'لماذا لم يستطع العصفور الصغير الطيران؟',w:'فكّر في أحداث النص',o:['لأنه وقع على الأرض وتأثر ريشه','لأنه اختبأ في العش','لأنه عاد إلى أصدقائه'],a:0},
+{p:'كيف عاد العصفور مع أصدقائه؟',w:'عاد ...',o:['بأمان','في العاصفة','إلى الأرض'],a:0}]}
+];
+let stage=0,q=0,score=0,stars=0,answered=0,locked=false;
+function show(id){['start','play','finish'].forEach(x=>$(x).hidden=x!==id)}
+function update(){ $('stars').textContent='⭐ '+stars;$('level').textContent='المرحلة '+Math.min(stage+1,5)+' من 5';$('score').textContent=score+' إجابات صحيحة';$('progress').style.width=(answered/10*100)+'%';}
+function render(){locked=false;const s=stages[stage],it=s.qs[q];$('hero').textContent=s.hero;$('stageName').textContent=s.title;$('count').textContent='السؤال '+(answered+1)+' من 10';$('prompt').textContent=it.p;$('question').textContent=it.w;$('feedback').textContent='';$('next').hidden=true;const box=$('options');box.replaceChildren();it.o.forEach((v,i)=>{const b=document.createElement('button');b.type='button';b.className='btn choice';b.textContent=v;b.addEventListener('click',()=>answer(i,b));box.appendChild(b)});update();show('play');}
+function answer(i,b){if(locked)return;locked=true;const it=stages[stage].qs[q];[...$('options').children].forEach((x,j)=>{x.disabled=true;if(j===it.a)x.classList.add('good')});answered++;if(i===it.a){score++;stars++;$('feedback').textContent='⭐ أحسنت! إجابة صحيحة';$('feedback').style.color='#258453'}else{$('feedback').textContent='💪 حاول مرة أخرى! الإجابة الصحيحة مبيّنة بالأخضر.';b.classList.add('bad');$('feedback').style.color='#b45353'}update();$('next').textContent=answered===10?'🏆 اكتشف النتيجة':'متابعة المغامرة ←';$('next').hidden=false;}
+function next(){q++;if(q>=stages[stage].qs.length){stage++;q=0}if(stage>=stages.length){finish();return}render()}
+function finish(){show('finish');$('hero').textContent='🐦';$('finalStars').textContent=stars+' / 10';$('finalScore').textContent=score+' / 10';$('finishEmoji').textContent=score>=9?'🏆':score>=6?'🥇':'🐦';$('finishMessage').textContent=score>=9?'ممتاز! ساعدت الطائر على العودة إلى أصدقائه بأمان.':score>=6?'أحسنت! اقتربت من إتقان كلمات الدرس.':'بداية جميلة! أعد اللعب لتتقن كلمات الدرس.';$('progress').style.width='100%';$('level').textContent='اكتملت المغامرة';$('score').textContent=score+' إجابات صحيحة'}
+function reset(){stage=0;q=0;score=0;stars=0;answered=0;render()}
+$('begin').addEventListener('click',reset);$('next').addEventListener('click',next);$('again').addEventListener('click',reset);
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+})();
+</script>
+</body></html>
